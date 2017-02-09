@@ -4,7 +4,7 @@ source("~/R/getConnection.R")
 ## get the array of sample times for the given schema and condition
 ##
 
-getTimes = function(schema, condition) {
+getTimes = function(schema="gse70796", condition="GR-REV") {
 
     con = getConnection()
     
