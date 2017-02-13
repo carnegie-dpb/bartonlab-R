@@ -4,19 +4,19 @@ source("~/R/getConnection.R")
 ## pull the samples into a data frame; supply optional condition to only pull samples for that condition
 ##
 
-getSamples = function(schema, condition) {
+getSamples = function(schema, condition=NULL, host="bartontools.dpb.carnegiescience.edu", dbname="bartonlab", user="sam", password="xenon5416") {
 
-  con = getConnection()
+  conn = getConnection(host, dbname, user, password)
 
-  if (is.na(condition)) {
-    samples = dbGetQuery(con, paste("SELECT * FROM ",schema,".samples ORDER BY num",sep=""))
+  if (is.null(condition)) {
+    samples = dbGetQuery(conn, paste("SELECT * FROM ",schema,".samples ORDER BY num",sep=""))
   } else {
-    samples = dbGetQuery(con, paste("SELECT * FROM ",schema,".samples WHERE condition='",condition,"' ORDER BY num",sep="")) 
+    samples = dbGetQuery(conn, paste("SELECT * FROM ",schema,".samples WHERE condition='",condition,"' ORDER BY num",sep="")) 
   }
   rownames(samples) = samples$label
   samples$label = NULL
 
-  dbDisconnect(con)
+  dbDisconnect(conn)
 
   return(samples)
 

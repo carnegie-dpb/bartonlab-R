@@ -1,5 +1,5 @@
-source("db.parseVector.R")
-source("getConnection.R")
+source("~/R/db.parseVector.R")
+source("~/R/getConnection.R")
 
 ##
 ## load bartonlab.schema.expression into a data frame
