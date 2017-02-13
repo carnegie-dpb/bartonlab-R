@@ -1,17 +1,21 @@
-normalize.deseq2 <- function(df) {
+library(DESeq2)
 
-  library(DESeq2)
+normalize.deseq2 = function(df) {
 
-  print("Normalizing across samples (estimateSizeFactors from DESeq2)...")
+    print("Normalizing across samples using DESeq2 estimateSizeFactors...")
+    
+    sizeFactors = estimateSizeFactorsForMatrix(df)
 
-  sizeFactors = estimateSizeFactorsForMatrix(df)
-  dfNorm = df
+    dfNorm = df
+    for (i in 1:length(colnames(df))) {
+        dfNorm[,i] = df[,i]/sizeFactors[i]
+    }
 
-  for (i in 1:length(colnames(df))) {
-    print(paste(colnames(df)[i],sizeFactors[i]))
-    dfNorm[,i] = df[,i]/sizeFactors[i]
-  }
+    cat(colnames(dfNorm), sep="\t")
+    cat("\n")
+    cat(sizeFactors, sep="\t")
+    cat("\n")
 
-  return(dfNorm)
+    return(dfNorm)
 
 }

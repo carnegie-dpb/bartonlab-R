@@ -1,18 +1,22 @@
-normalize.tmm <- function(df) {
+library(edgeR)
 
-  library(edgeR)
+normalize.tmm = function(df) {
 
-  print("Normalizing across samples (TMM from edgeR)...")
+    print("Normalizing across samples with TMM from edgeR...")
 
-  ## use TMM normalization, rows with all zeros are automatically excluded
-  normFactors <- calcNormFactors(df, method="TMM")
+    ## use TMM normalization, rows with all zeros are automatically excluded
+    normFactors = calcNormFactors(df, method="TMM")
 
-  dfNew <- df
-  for (i in 1:dim(dfNew)[2]) {
-    print(paste("sample",i,"/",normFactors[i]))
-    dfNew[,i] <- dfNew[,i]/normFactors[i]
-  }
+    dfNew = df
+    for (i in 1:length(colnames(dfNew))) {
+        dfNew[,i] = dfNew[,i]/normFactors[i]
+    }
 
-  return(dfNew)
+    cat(colnames(dfNew), sep="\t")
+    cat("\n")
+    cat(normFactors, sep="\t")
+    cat("\n")
+    
+    return(dfNew)
 
 }

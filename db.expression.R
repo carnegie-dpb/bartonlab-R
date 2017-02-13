@@ -1,21 +1,23 @@
 source("db.parseVector.R")
+source("getConnection.R")
 
 ##
 ## load bartonlab.schema.expression into a data frame
 ##
 
-db.expression = function(schema) {
+db.expression = function(schema, host="bartontools.dpb.carnegiescience.edu", dbname="bartonlab", user="sam", password="xenon5416") {
 
-    con = getConnection()
+    conn = getConnection(host, dbname, user, password)
+    print(paste("Querying",schema,"..."))
 
     ## column names from samples
-    print(paste("Querying",schema,"..."))
-    samples = dbGetQuery(con, paste(sep="","SELECT * FROM ",schema,".samples ORDER BY num"))
+    samples = dbGetQuery(conn, paste(sep="","SELECT * FROM ",schema,".samples ORDER BY num"))
+
     ## expression rows come over as PostgreSQL vectors in "values" column which then require parsing
-    vectors = dbGetQuery(con, paste(sep="", "SELECT * FROM ",schema,".expression ORDER BY id"));
+    vectors = dbGetQuery(conn, paste(sep="", "SELECT * FROM ",schema,".expression ORDER BY id"));
     
     ## disconnect!
-    dbDisconnect(con)
+    dbDisconnect(conn)
 
     ## output header
     print("Dumping data to /tmp/expression.txt...")

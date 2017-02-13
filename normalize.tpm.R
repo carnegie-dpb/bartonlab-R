@@ -1,20 +1,24 @@
 normalize.tpm <- function(df) {
 
-  print("Normalizing across samples (TPM using <RPKM> for all samples...")
+    print("Normalizing across samples (TPM using <RPKM> for all samples...")
 
-  ## use TPKM normalization; df should be a dataframe of RPKM values, not counts
-  normFactors = apply(df, 2, mean)
+    ## Sum all the expression values
+    normFactors = apply(df, 2, sum)
 
-  ## scale back to get a number that is sort of like counts
-  normFactors = normFactors/1000
+    ## scale to 1e6 since it's per million
+    normFactors = normFactors/1e6
 
-  ## scale
-  dfNew <- df
-  for (i in 1:dim(dfNew)[2]) {
-    print(paste("sample",i,"/",normFactors[i]))
-    dfNew[,i] <- dfNew[,i]/normFactors[i]
-  }
+    ## scale
+    dfNorm = df
+    for (i in 1:dim(dfNorm)[2]) {
+        dfNorm[,i] = dfNorm[,i]/normFactors[i]
+    }
 
-  return(dfNew)
+    cat(colnames(dfNorm), sep="\t")
+    cat("\n")
+    cat(normFactors, sep="\t")
+    cat("\n")
+
+    return(dfNorm)
 
 }
