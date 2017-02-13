@@ -21,7 +21,10 @@ getExpressionDF = function(schema) {
     
     for (i in 1:ngenes) {
         id[i] = expr$id[i]
-        values[i,] = as.numeric(strsplit(substr(expr$values[i],2,nchar(expr$values[i])-1), split=",", fixed=TRUE)[[1]])
+        temp = as.numeric(strsplit(substr(expr$values[i],2,nchar(expr$values[i])-1), split=",", fixed=TRUE)[[1]])
+        if (length(temp)==nsamples) {
+            values[i,] = temp
+        }
     }
 
     df = data.frame(values=values)
