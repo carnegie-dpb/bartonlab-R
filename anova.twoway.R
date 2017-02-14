@@ -4,6 +4,9 @@
 ## Requires dataframes expr and samples, with samples rows = expr columns; also need array of conditions to be included in analysis
 ##
 ## set takeLog2=TRUE to take log2(values+1) before ANOVA
+##
+## samples:
+## [label] num condition control time comment replicate internalscale
 
 anova.twoway = function(expr, samples, conditions, takeLog2=FALSE) {
 
@@ -36,26 +39,24 @@ anova.twoway = function(expr, samples, conditions, takeLog2=FALSE) {
         if ((i %% 100)==0) {
             tEnd = proc.time()[3]
             duration = tEnd - tStart
-            estimate = (length(geneID)-i)/100*duration/60
+            estimate = (length(geneID)-i)/100*duration/60 + 1
             elapsed = (tEnd-t0)/60
             print(paste("=== Elapsed time:",round(elapsed),"minutes; Estimated completion in",round(estimate),"minutes"), quote=FALSE)
             tStart = tEnd
         }
 
-        ## samples:
-        ## [label] num condition control time comment internalscale
-        
+        ## build the expression dataframe for this gene
         df = data.frame( condition=character(), control=logical(), time=character(), comment=character(), internalscale=double(), expr=double(), check.names=TRUE )
-        
         for (j in 1:length(laneID)) {
+            ## normalize using samples.internalscale
+            val = expr[geneID[i],laneID[j]] / samples[laneID[j],"internalscale"]
             if (takeLog2) {
                 ## take log2(value+1)
-                row = cbind( samples[laneID[j],], log2(expr[geneID[i],laneID[j]]+1) )
+                row = cbind( samples[laneID[j],], expr=log2(val+1) )
             } else {
                 ## straight-up values (could already be log2 transformed, of course)
-                row = cbind( samples[laneID[j],], expr[geneID[i],laneID[j]] )
+                row = cbind( samples[laneID[j],], expr=val )
             }
-            colnames(row)[6] = "expr"
             df = rbind(df, row)
         }
 

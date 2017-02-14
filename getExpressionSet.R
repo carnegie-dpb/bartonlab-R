@@ -1,7 +1,8 @@
 library("RPostgreSQL")
 library("affy")
+
 source("~/R/getID.R")
-source("~/R/db.expression.R")
+source("~/R/getExpressionDF.R")
 
 ##
 ## Create an affy package ExpressionSet instance from an experiment given by the schema
@@ -45,18 +46,18 @@ source("~/R/db.expression.R")
 ##           of rows and row names of ‘protocolData’ must agree with the
 ##           dimension and column names of ‘assayData’.
 
-getExpressionSet = function(schema, takeLog=FALSE) {
+getExpressionSet = function(schema, takeLog2=FALSE, host="bartontools.dpb.carnegiescience.edu", dbname="bartonlab", user="sam", password="xenon5416") {
 
     ## get expression as a data frame
-    expr = db.expression(schema);
+    expr = getExpressionDF(schema, host=host, dbname=dbname, user=user, password=password);
 
     ## remove rows that contain a zero expression sample
     print("Removing rows that contain a zero expression value.")
     row_sub = apply(expr, 1, function(row) all(row!=0))
     expr = expr[row_sub,]
 
-    ## log2(values) when takeLog=TRUE
-    if (takeLog) {
+    ## log2(values) when takeLog2=TRUE
+    if (takeLog2) {
         print("Taking log2(expression).");
         expr = log2(expr)
     }

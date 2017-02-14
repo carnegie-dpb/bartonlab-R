@@ -4,9 +4,9 @@ source("~/R/getConnection.R")
 ## get the entire expression matrix (all genes, all samples) as a data frame
 ##
 
-getExpressionDF = function(schema) {
+getExpressionDF = function(schema, host="bartontools.dpb.carnegiescience.edu", dbname="bartonlab", user="sam", password="xenon5416") {
 
-    con = getConnection();
+    con = getConnection(host, dbname, user, password);
     
     samples = dbGetQuery(con, paste("SELECT * FROM ",schema,".samples ORDER BY num",sep=""))
     expr = dbGetQuery(con, paste("SELECT * FROM ",schema,".expression ORDER BY id",sep=""))
