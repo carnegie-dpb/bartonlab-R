@@ -1,19 +1,18 @@
+source("~/R/getExpressionDF.R")
+source("~/R/getSamples.R")
 ##
 ## dot plot one condition against another from the full expression dataframe
 ##
+compare.conditions = function(schema, cond1, cond2, title="", scale=TRUE) {
 
-compare.conditions = function(expr, samples, cond1, cond2, title="") {
+    samples = getSamples(schema)
+    expr = getExpressionDF(schema, scale=scale)
 
     cond1.labels = rownames(samples[samples$condition==cond1,])
     cond2.labels = rownames(samples[samples$condition==cond2,])
 
     expr1 = expr[,cond1.labels]
     expr2 = expr[,cond2.labels]
-
-    print(cond1)
-    print(head(expr1))
-    print(cond2)
-    print(head(expr2))
 
     mean1 = rowMeans(expr1)
     mean2 = rowMeans(expr2)

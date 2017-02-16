@@ -3,14 +3,15 @@
 ##
 ## Requires dataframes expr and samples, with samples rows = expr columns; also need array of conditions to be included in analysis
 ##
-## set takeLog2=TRUE to take log2(values+1) before ANOVA
+## set takeLog2=TRUE to take log2(values+1) before ANOVA.
+## set scale=TRUE to scale the expression values by samples.internalscale before ANOVA.
+## NOTE: the default scale=FALSE because the default getExpressionDF value is TRUE. Don't want to scale twice!
 ##
 ## samples:
 ## [label] num condition control time comment replicate internalscale
 ##
-## IMPORTANT NOTE: expr is assumed to already be scaled; use getExpressionDF(..., scale=TRUE) (the default).
 
-anova.twoway = function(expr, samples, conditions, takeLog2=FALSE) {
+anova.twoway = function(expr, samples, conditions, takeLog2=TRUE, scale=FALSE) {
 
     ## factors have to be strings! (at least by default)
     samples$time = as.character(samples$time)
@@ -50,8 +51,13 @@ anova.twoway = function(expr, samples, conditions, takeLog2=FALSE) {
         ## build the expression dataframe for this gene
         df = data.frame( condition=character(), control=logical(), time=character(), comment=character(), internalscale=double(), expr=double(), check.names=TRUE )
         for (j in 1:length(laneID)) {
-            ## normalize using samples.internalscale
-            val = expr[geneID[i],laneID[j]] / samples[laneID[j],"internalscale"]
+            if (scale) {
+                ## normalize using samples.internalscale
+                val = expr[geneID[i],laneID[j]] / samples[laneID[j],"internalscale"]
+            } else {
+                ## values are already normalized
+                val = expr[geneID[i],laneID[j]]
+            }
             if (takeLog2) {
                 ## take log2(value+1)
                 row = cbind( samples[laneID[j],], expr=log2(val+1) )
