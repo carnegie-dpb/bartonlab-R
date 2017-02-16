@@ -7,6 +7,8 @@
 ##
 ## samples:
 ## [label] num condition control time comment replicate internalscale
+##
+## IMPORTANT NOTE: expr is assumed to already be scaled; use getExpressionDF(..., scale=TRUE) (the default).
 
 anova.twoway = function(expr, samples, conditions, takeLog2=FALSE) {
 

@@ -46,10 +46,10 @@ source("~/R/getExpressionDF.R")
 ##           of rows and row names of ‘protocolData’ must agree with the
 ##           dimension and column names of ‘assayData’.
 
-getExpressionSet = function(schema, takeLog2=FALSE, host="bartontools.dpb.carnegiescience.edu", dbname="bartonlab", user="sam", password="xenon5416") {
+getExpressionSet = function(schema, host="localhost", takeLog2=FALSE) {
 
     ## get expression as a data frame
-    expr = getExpressionDF(schema, host=host, dbname=dbname, user=user, password=password);
+    expr = getExpressionDF(schema, host=host);
 
     ## remove rows that contain a zero expression sample
     print("Removing rows that contain a zero expression value.")

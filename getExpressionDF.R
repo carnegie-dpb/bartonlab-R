@@ -1,17 +1,16 @@
 source("~/R/getConnection.R")
 
 ##
-## get the entire expression matrix (all genes, all samples) as a data frame
+## Get the entire expression matrix (all genes, all samples) as a data frame
+## If (scaled) then divide values by samples$internalscale.
 ##
 
-getExpressionDF = function(schema, host="bartontools.dpb.carnegiescience.edu", dbname="bartonlab", user="sam", password="xenon5416") {
+getExpressionDF = function(schema, host="localhost", scaled=TRUE) {
 
-    con = getConnection(host, dbname, user, password);
-    
-    samples = dbGetQuery(con, paste("SELECT * FROM ",schema,".samples ORDER BY num",sep=""))
-    expr = dbGetQuery(con, paste("SELECT * FROM ",schema,".expression ORDER BY id",sep=""))
-
-    dbDisconnect(con)
+    conn = getConnection(host);
+    samples = dbGetQuery(conn, paste("SELECT * FROM ",schema,".samples ORDER BY num",sep=""))
+    expr = dbGetQuery(conn, paste("SELECT * FROM ",schema,".expression ORDER BY id",sep=""))
+    dbDisconnect(conn)
 
     ## parse values
     nsamples = length(samples$label)
@@ -23,7 +22,11 @@ getExpressionDF = function(schema, host="bartontools.dpb.carnegiescience.edu", d
         id[i] = expr$id[i]
         temp = as.numeric(strsplit(substr(expr$values[i],2,nchar(expr$values[i])-1), split=",", fixed=TRUE)[[1]])
         if (length(temp)==nsamples) {
-            values[i,] = temp
+            if (scaled) {
+                values[i,] = temp/samples$internalscale
+            } else {
+                values[i,] = temp
+            }
         }
     }
 
