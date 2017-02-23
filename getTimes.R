@@ -4,13 +4,13 @@ source("~/R/getConnection.R")
 ## get the array of sample times for the given schema and condition
 ##
 
-getTimes = function(schema="gse70796", condition="GR-REV") {
+getTimes = function(schema, condition=NULL, host="localhost") {
 
-    con = getConnection()
+    conn = getConnection(host)
     
-    samples = dbGetQuery(con, paste("SELECT * FROM ",schema,".samples ORDER BY num",sep=""))
+    samples = dbGetQuery(conn, paste("SELECT * FROM ",schema,".samples ORDER BY num",sep=""))
 
-    dbDisconnect(con)
+    dbDisconnect(conn)
 
     if (condition=="ALL") {
         ## return all samples
