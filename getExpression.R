@@ -1,15 +1,16 @@
+source("~/R/getConnection.R")
 source("~/R/getID.R")
 
 ##
 ## pull the requested gene's expression from the expression table in the given schema for the given condition
 ##
 
-getExpression = function(schema, host="localhost", condition, gene, scale=TRUE) {
+getExpression = function(schema, host="localhost", condition="ALL", gene, scale=TRUE) {
 
     if (nchar(gene)==9 & toupper(substr(gene,1,2))=="AT") {
         id = toupper(gene)
     } else {
-        id = getID(gene)
+        id = getID(gene,host=host)
         if (length(id)>1) {
             print(paste("Gene name",gene,"is ambiguous. Terminating."))
             return(NULL)
