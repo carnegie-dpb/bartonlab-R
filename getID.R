@@ -4,13 +4,13 @@ source("~/R/getConnection.R")
 ## get the IDs for the given gene names
 ##
 
-getID = function(name) {
+getID = function(name, host="localhost") {
 
     ids = c()
     
-    con = getConnection()
+    conn = getConnection(host=host)
     for (i in 1:length(name)) {
-        gene = dbGetQuery(con, paste("SELECT id FROM genes WHERE name='",name[i],"'",sep=""))
+        gene = dbGetQuery(conn, paste("SELECT id FROM genes WHERE name='",name[i],"'",sep=""))
         if (is.null(gene$id[1])) {
             ids = c(ids, name[i])
         } else {
@@ -21,7 +21,7 @@ getID = function(name) {
             }
         }
     }
-    dbDisconnect(con)
+    dbDisconnect(conn)
 
     return(ids)
 
