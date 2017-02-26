@@ -1,20 +1,12 @@
+library("RPostgreSQL")
+
 ##
 ## Retrieve the gene's name from the given gene ID.
 ##
-
-library("RPostgreSQL")
-
-getName = function(id) {
-
-  drv = dbDriver("PostgreSQL")
-  con = dbConnect(drv, dbname="bartonlab")
-  
-  id = toupper(id)
-
-  gene = dbGetQuery(con, paste("SELECT * FROM genes WHERE id='",id,"'",sep=""))
-
-  dbDisconnect(con)
-
-  return(gene$name[1])
-
+getName = function(id, host="localhost") {
+    conn = getConnection(host=host)
+    id = toupper(id)
+    gene = dbGetQuery(conn, paste("SELECT * FROM genes WHERE id='",id,"'",sep=""))
+    dbDisconnect(conn)
+    return(gene$name[1])
 }
