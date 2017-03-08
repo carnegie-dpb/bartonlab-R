@@ -10,7 +10,7 @@ getID = function(name, host="localhost") {
     
     conn = getConnection(host=host)
     for (i in 1:length(name)) {
-        gene = dbGetQuery(conn, paste("SELECT id FROM genes WHERE name='",name[i],"'",sep=""))
+        gene = dbGetQuery(conn, paste("SELECT id FROM genes WHERE genus='Arabidopsis' AND name='",name[i],"'",sep=""))
         if (is.null(gene$id[1])) {
             ids = c(ids, name[i])
         } else {
